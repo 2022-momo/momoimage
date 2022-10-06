@@ -23,10 +23,11 @@ public class ImageService {
     private static final List<String> IMAGE_CONTENT_TYPES = List.of(IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE);
     private static final int NOT_FOUND_EXTENSION = -1;
 
-    public String save(String path, MultipartFile requestFile) {
-        validateContentType(requestFile);
-        String targetPath = PATH_PREFIX + path;
-        String extension = extractExtension(requestFile.getOriginalFilename());
+    public String save(ImageDto imageDto) {
+        MultipartFile multipartFile = imageDto.getFile();
+        validateContentType(multipartFile);
+        String targetPath = PATH_PREFIX + imageDto.getPath();
+        String extension = extractExtension(multipartFile.getOriginalFilename());
         String changedFileName = UUID.randomUUID().toString() + "." + extension;
 
         File savedFile = new File(targetPath + changedFileName);
@@ -35,7 +36,7 @@ public class ImageService {
         fileInit(savedFile, directory);
 
         try (OutputStream outputStream = new FileOutputStream(savedFile)) {
-            outputStream.write(requestFile.getBytes());
+            outputStream.write(multipartFile.getBytes());
         } catch (IOException e) {
             throw new ImageException("파일 입출력 에러입니다.");
         }

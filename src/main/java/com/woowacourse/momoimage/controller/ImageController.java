@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
+import com.woowacourse.momoimage.service.ImageDto;
 import com.woowacourse.momoimage.service.ImageService;
 
 @RestController
@@ -22,8 +23,8 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping("/api/images")
-    public ResponseEntity<Void> imageUpload(@RequestParam String path, @RequestParam("imageFile") MultipartFile imageFile) {
-        String fileName = imageService.save(path, imageFile);
+    public ResponseEntity<Void> imageUpload(ImageDto imageDto) {
+        String fileName = imageService.save(imageDto);
 
         return ResponseEntity.created(URI.create("/api/images/" + fileName)).build();
     }
