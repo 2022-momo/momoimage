@@ -23,7 +23,7 @@ public class ImageController {
 
     @PostMapping("/api/images")
     public ResponseEntity<Void> imageUpload(@RequestParam String path, @RequestParam("imageFile") MultipartFile imageFile) {
-        String fileName = imageService.save(imageFile);
+        String fileName = imageService.save(path, imageFile);
 
         return ResponseEntity.created(URI.create("/api/images/" + fileName)).build();
     }
