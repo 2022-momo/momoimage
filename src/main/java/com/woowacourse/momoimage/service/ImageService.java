@@ -9,22 +9,29 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.woowacourse.momoimage.exception.ImageException;
+import com.woowacourse.momoimage.service.dto.ImageDto;
 
 @Service
 public class ImageService {
 
     private static final String PATH_PREFIX = "./image-save/";
+    private static final String IMAGE_DOMAIN = "https://image.moyeora.site/";
     private static final List<String> IMAGE_CONTENT_TYPES = List.of(IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE);
     private static final int NOT_FOUND_EXTENSION = -1;
 
     public String save(ImageDto imageDto) {
+        // 이미지서버 파일 저장 규칙 : path의 앞에는 /가 나오며, 뒤에는 /가 붙지 않는다.
+
         MultipartFile multipartFile = imageDto.getFile();
+        String path = Optional.of(imageDto.getPath())
+                .orElse("");
         validateContentType(multipartFile);
         String targetPath = PATH_PREFIX + imageDto.getPath();
         String extension = extractExtension(multipartFile.getOriginalFilename());
@@ -41,7 +48,7 @@ public class ImageService {
             throw new ImageException("파일 입출력 에러입니다.");
         }
 
-        return savedFile.getName();
+        return IMAGE_DOMAIN + path + "/" + savedFile.getName();
     }
 
     private String extractExtension(String originalFilename) {
