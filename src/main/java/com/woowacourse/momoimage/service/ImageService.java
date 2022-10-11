@@ -38,7 +38,6 @@ public class ImageService {
         String changedFileName = UUID.randomUUID().toString() + "." + extension;
 
         File savedFile = new File(targetPath + changedFileName);
-        // File directory = new File(targetPath);
 
         createDirectories(targetPath);
         saveFile(savedFile);
@@ -76,14 +75,14 @@ public class ImageService {
     }
 
     private void createDirectories(String path) {
-        String total = "";
+        StringBuilder total = new StringBuilder();
         for (String now : path.split("/")) {
             if (now.equals(".")) {
-                total += now;
+                total.append(now);
                 continue;
             }
-            total += "/" + now;
-            File directory = new File(total);
+            total.append("/").append(now);
+            File directory = new File(new String(total));
             createDirectory(directory);
         }
     }
