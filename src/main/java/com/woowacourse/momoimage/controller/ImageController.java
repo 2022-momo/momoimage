@@ -2,17 +2,14 @@ package com.woowacourse.momoimage.controller;
 
 import java.net.URI;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
+import com.woowacourse.momoimage.service.dto.ImageDto;
 import com.woowacourse.momoimage.service.ImageService;
 
 @RestController
@@ -22,9 +19,9 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping("/api/images")
-    public ResponseEntity<Void> imageUpload(@RequestParam String path, @RequestParam("imageFile") MultipartFile imageFile) {
-        String fileName = imageService.save(imageFile);
+    public ResponseEntity<Void> imageUpload(@ModelAttribute ImageDto imageDto) {
+        final var fullPath = imageService.save(imageDto);
 
-        return ResponseEntity.created(URI.create("/api/images/" + fileName)).build();
+        return ResponseEntity.created(URI.create(fullPath)).build();
     }
 }
