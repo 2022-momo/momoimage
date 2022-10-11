@@ -22,7 +22,7 @@ import com.woowacourse.momoimage.service.dto.ImageDto;
 public class ImageService {
 
     private static final String PATH_PREFIX = "./image-save";
-    private static final String IMAGE_DOMAIN = "https://image.moyeora.site/";
+    private static final String IMAGE_DOMAIN = "https://image.moyeora.site";
     private static final List<String> IMAGE_CONTENT_TYPES = List.of(IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE);
     private static final int NOT_FOUND_EXTENSION = -1;
 
@@ -48,7 +48,7 @@ public class ImageService {
             throw new ImageException("파일 입출력 에러입니다.");
         }
 
-        return IMAGE_DOMAIN + path + savedFile.getName();
+        return IMAGE_DOMAIN + path + "/" + savedFile.getName();
     }
 
     private String extractExtension(String originalFilename) {
