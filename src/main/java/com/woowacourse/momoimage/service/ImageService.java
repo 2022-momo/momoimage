@@ -74,12 +74,11 @@ public class ImageService {
                 .noneMatch(contentType::equals);
     }
 
-    private void fileInit(File temporary, File directory) {
+    private void fileInit(File savedFile, File directory) {
         try {
-            if (!directory.exists()) {
-                directory.mkdirs();
+            if (!directory.exists() && !directory.mkdirs() && savedFile.createNewFile()) {
+                throw new ImageException("파일/폴더 생성 에러입니다.");
             }
-            temporary.createNewFile();
         } catch (IOException e) {
             throw new ImageException("파일/폴더 생성 에러입니다.");
         }
