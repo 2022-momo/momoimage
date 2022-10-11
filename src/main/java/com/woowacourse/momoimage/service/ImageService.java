@@ -48,7 +48,7 @@ public class ImageService {
             throw new ImageException("파일 입출력 에러입니다.");
         }
 
-        return IMAGE_DOMAIN + path + "/" + savedFile.getName();
+        return IMAGE_DOMAIN + path + savedFile.getName();
     }
 
     private String extractExtension(String originalFilename) {
