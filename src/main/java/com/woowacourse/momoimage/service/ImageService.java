@@ -40,7 +40,8 @@ public class ImageService {
         File savedFile = new File(targetPath + changedFileName);
         File directory = new File(PATH_PREFIX);
 
-        fileInit(savedFile, directory);
+        createDirectory(directory);
+        saveFile(savedFile);
 
         try (OutputStream outputStream = new FileOutputStream(savedFile)) {
             outputStream.write(multipartFile.getBytes());
@@ -74,16 +75,19 @@ public class ImageService {
                 .noneMatch(contentType::equals);
     }
 
-    private void fileInit(File savedFile, File directory) {
+    private void createDirectory(File directory) {
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw new ImageException("이미지 폴더 생성 에러입니다.");
+        }
+    }
+
+    private void saveFile(File savedFile) {
         try {
-            if (!directory.exists() && !directory.mkdirs()) {
-                throw new ImageException("이미지 폴더 생성 에러입니다.");
-            }
             if (!savedFile.createNewFile()) {
                 throw new ImageException("이미지 파일 생성 에러입니다.");
             }
         } catch (IOException e) {
-            throw new ImageException(String.format("파일/폴더 생성 에러입니다. [%s]", e.getMessage()));
+            throw new ImageException(String.format("이미지 파일 생성 에러입니다. [%s]", e.getMessage()));
         }
     }
 }
