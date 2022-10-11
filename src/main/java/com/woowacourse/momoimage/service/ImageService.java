@@ -78,6 +78,10 @@ public class ImageService {
     private void createDirectories(String path) {
         String total = "";
         for (String now : path.split("/")) {
+            if (now.equals(".")) {
+                total += now;
+                continue;
+            }
             total += "/" + now;
             File directory = new File(total);
             createDirectory(directory);
