@@ -65,7 +65,7 @@ public class ImageService {
         String contentType = file.getContentType();
 
         if (contentType == null || isContentTypeNotImage(contentType)) {
-            throw new ImageException("올바른 컨텐츠 타입이 아닙니다.");
+            throw new ImageException(String.format("올바른 컨텐츠 타입이 아닙니다. [%s]", contentType));
         }
     }
 
