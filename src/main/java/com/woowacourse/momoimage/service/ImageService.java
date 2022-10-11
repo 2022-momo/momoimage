@@ -38,9 +38,9 @@ public class ImageService {
         String changedFileName = UUID.randomUUID().toString() + "." + extension;
 
         File savedFile = new File(targetPath + changedFileName);
-        File directory = new File(PATH_PREFIX);
 
-        fileInit(savedFile, directory);
+        createDirectories(targetPath);
+        saveFile(savedFile);
 
         try (OutputStream outputStream = new FileOutputStream(savedFile)) {
             outputStream.write(multipartFile.getBytes());
@@ -74,14 +74,32 @@ public class ImageService {
                 .noneMatch(contentType::equals);
     }
 
-    private void fileInit(File temporary, File directory) {
-        try {
-            if (!directory.exists()) {
-                directory.mkdirs();
+    private void createDirectories(String path) {
+        StringBuilder total = new StringBuilder();
+        for (String now : path.split("/")) {
+            if (now.equals(".")) {
+                total.append(now);
+                continue;
             }
-            temporary.createNewFile();
+            total.append("/").append(now);
+            File directory = new File(new String(total));
+            createDirectory(directory);
+        }
+    }
+
+    private void createDirectory(File directory) {
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw new ImageException("이미지 폴더 생성 에러입니다.");
+        }
+    }
+
+    private void saveFile(File savedFile) {
+        try {
+            if (!savedFile.createNewFile()) {
+                throw new ImageException("이미지 파일 생성 에러입니다.");
+            }
         } catch (IOException e) {
-            throw new ImageException("파일/폴더 생성 에러입니다.");
+            throw new ImageException(String.format("이미지 파일 생성 에러입니다. [%s]", e.getMessage()));
         }
     }
 }
