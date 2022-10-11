@@ -76,11 +76,14 @@ public class ImageService {
 
     private void fileInit(File savedFile, File directory) {
         try {
-            if (!directory.exists() && !directory.mkdirs() && savedFile.createNewFile()) {
-                throw new ImageException("파일/폴더 생성 에러입니다.");
+            if (!directory.exists() && !directory.mkdirs()) {
+                throw new ImageException("이미지 폴더 생성 에러입니다.");
+            }
+            if (!savedFile.createNewFile()) {
+                throw new ImageException("이미지 파일 생성 에러입니다.");
             }
         } catch (IOException e) {
-            throw new ImageException("파일/폴더 생성 에러입니다.");
+            throw new ImageException(String.format("파일/폴더 생성 에러입니다. [%s]", e.getMessage()));
         }
     }
 }
