@@ -37,7 +37,7 @@ public class ImageService {
         String extension = extractExtension(multipartFile.getOriginalFilename());
         String changedFileName = UUID.randomUUID().toString() + "." + extension;
 
-        File savedFile = new File(targetPath + changedFileName);
+        File savedFile = new File(targetPath + "/" + changedFileName);
 
         createDirectories(targetPath);
         saveFile(savedFile);
