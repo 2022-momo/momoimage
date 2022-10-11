@@ -38,9 +38,9 @@ public class ImageService {
         String changedFileName = UUID.randomUUID().toString() + "." + extension;
 
         File savedFile = new File(targetPath + changedFileName);
-        File directory = new File(PATH_PREFIX);
+        // File directory = new File(targetPath);
 
-        createDirectory(directory);
+        createDirectories(targetPath);
         saveFile(savedFile);
 
         try (OutputStream outputStream = new FileOutputStream(savedFile)) {
@@ -73,6 +73,15 @@ public class ImageService {
     private boolean isContentTypeNotImage(String contentType) {
         return IMAGE_CONTENT_TYPES.stream()
                 .noneMatch(contentType::equals);
+    }
+
+    private void createDirectories(String path) {
+        String total = "";
+        for (String now : path.split("/")) {
+            total += now;
+            File directory = new File(total);
+            createDirectory(directory);
+        }
     }
 
     private void createDirectory(File directory) {
