@@ -39,6 +39,7 @@ public class ImageService {
         String path = Optional.of(imageDto.getPath())
                 .orElse("");
         imageValidator.validateContentType(multipartFile);
+        imageValidator.validateFileIsImage(multipartFile);
         String targetPath = PATH_PREFIX + imageDto.getPath();
         String extension = extractExtension(multipartFile.getOriginalFilename());
         String changedFileName = UUID.randomUUID().toString() + "." + extension;
@@ -47,7 +48,6 @@ public class ImageService {
 
         createDirectories(targetPath);
         saveFile(savedFile);
-
         try (OutputStream outputStream = new FileOutputStream(savedFile)) {
             outputStream.write(multipartFile.getBytes());
         } catch (IOException e) {
