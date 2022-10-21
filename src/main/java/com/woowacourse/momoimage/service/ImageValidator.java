@@ -1,5 +1,7 @@
 package com.woowacourse.momoimage.service;
 
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
@@ -19,7 +21,7 @@ import com.woowacourse.momoimage.exception.ImageException;
 public class ImageValidator {
 
     private static final List<String> IMAGE_CONTENT_TYPES =
-            List.of(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE);
+            List.of(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, APPLICATION_OCTET_STREAM_VALUE);
 
     public void validateContentType(MultipartFile file) {
         String contentType = file.getContentType();
