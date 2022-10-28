@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,16 +17,20 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.RequiredArgsConstructor;
+
 import com.woowacourse.momoimage.exception.ImageException;
 import com.woowacourse.momoimage.service.dto.ImageDto;
 
 @Service
+@RequiredArgsConstructor
 public class ImageService {
 
     private static final String PATH_PREFIX = "./image-save";
-    private static final String IMAGE_DOMAIN = "https://image.moyeora.site";
-    private static final List<String> IMAGE_CONTENT_TYPES = List.of(IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE);
+    private static final String IMAGE_DOMAIN = "http://image.moyeora.site";
     private static final int NOT_FOUND_EXTENSION = -1;
+
+    private final ImageValidator imageValidator;
 
     public String save(ImageDto imageDto) {
         // 이미지서버 파일 저장 규칙 : path의 앞에는 /가 나오며, 뒤에는 /가 붙지 않는다.
@@ -32,7 +38,8 @@ public class ImageService {
         MultipartFile multipartFile = imageDto.getFile();
         String path = Optional.of(imageDto.getPath())
                 .orElse("");
-        validateContentType(multipartFile);
+        imageValidator.validateContentType(multipartFile);
+        imageValidator.validateFileIsImage(multipartFile);
         String targetPath = PATH_PREFIX + imageDto.getPath();
         String extension = extractExtension(multipartFile.getOriginalFilename());
         String changedFileName = UUID.randomUUID().toString() + "." + extension;
@@ -41,7 +48,6 @@ public class ImageService {
 
         createDirectories(targetPath);
         saveFile(savedFile);
-
         try (OutputStream outputStream = new FileOutputStream(savedFile)) {
             outputStream.write(multipartFile.getBytes());
         } catch (IOException e) {
@@ -61,35 +67,12 @@ public class ImageService {
         return originalFilename.substring(index + 1);
     }
 
-    private void validateContentType(MultipartFile file) {
-        String contentType = file.getContentType();
-
-        if (contentType == null || isContentTypeNotImage(contentType)) {
-            throw new ImageException(String.format("올바른 컨텐츠 타입이 아닙니다. [%s]", contentType));
-        }
-    }
-
-    private boolean isContentTypeNotImage(String contentType) {
-        return IMAGE_CONTENT_TYPES.stream()
-                .noneMatch(contentType::equals);
-    }
 
     private void createDirectories(String path) {
-        StringBuilder total = new StringBuilder();
-        for (String now : path.split("/")) {
-            if (now.equals(".")) {
-                total.append(now);
-                continue;
-            }
-            total.append("/").append(now);
-            File directory = new File(new String(total));
-            createDirectory(directory);
-        }
-    }
-
-    private void createDirectory(File directory) {
-        if (!directory.exists() && !directory.mkdirs()) {
-            throw new ImageException("이미지 폴더 생성 에러입니다.");
+        try {
+            Files.createDirectories(Paths.get(path));
+        } catch (IOException e) {
+            throw new ImageException("이미지 디렉토리 생성 오류입니다.");
         }
     }
 
