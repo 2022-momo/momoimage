@@ -27,7 +27,7 @@ import com.woowacourse.momoimage.service.dto.ImageDto;
 public class ImageService {
 
     private static final String PATH_PREFIX = "./image-save";
-    private static final String IMAGE_DOMAIN = "http://image.moyeora.site";
+    private static final String IMAGE_DOMAIN = "http://image.moyeora.co.kr";
     private static final int NOT_FOUND_EXTENSION = -1;
 
     private final ImageValidator imageValidator;
